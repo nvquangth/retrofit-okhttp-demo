@@ -11,6 +11,7 @@ import com.nvquang.retrofitokhttpdemo.data.model.User;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,21 +41,7 @@ public class UserRemoteDataSource implements UserDataSource.RemoteDataSource {
     }
 
     @Override
-    public void searchUser(final String q, final Callback<List<User>> callback) {
-        callback.onStartLoading();
-        mAPI.searchUsers(q).enqueue(new retrofit2.Callback<SearchResult>() {
-            @Override
-            public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
-                if (response.body() != null) {
-                    callback.onLoaded(response.body().getUsers());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SearchResult> call, Throwable t) {
-                callback.onDataNotAvailable(null);
-            }
-        });
-        callback.onComplete();
+    public Observable<SearchResult> searchUser(String q) {
+        return mAPI.searchUsers(q);
     }
 }

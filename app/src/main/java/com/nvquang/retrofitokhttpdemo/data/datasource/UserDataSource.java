@@ -1,8 +1,8 @@
 package com.nvquang.retrofitokhttpdemo.data.datasource;
 
-import com.nvquang.retrofitokhttpdemo.data.model.User;
+import com.nvquang.retrofitokhttpdemo.data.model.SearchResult;
 
-import java.util.List;
+import io.reactivex.Observable;
 
 /**
  * Created by quangnv on 16/08/2018
@@ -10,19 +10,8 @@ import java.util.List;
 
 public interface UserDataSource {
 
-    interface Callback<T> {
-
-        void onStartLoading();
-
-        void onLoaded(T data);
-
-        void onDataNotAvailable(Exception e);
-
-        void onComplete();
-    }
-
     interface RemoteDataSource extends UserDataSource {
 
-        void searchUser(String q, Callback<List<User>> callback);
+        Observable<SearchResult> searchUser(String q);
     }
 }

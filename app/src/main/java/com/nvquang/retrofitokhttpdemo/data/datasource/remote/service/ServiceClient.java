@@ -12,6 +12,7 @@ import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -42,7 +43,8 @@ public class ServiceClient {
         httpClientBuilder.readTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS);
         httpClientBuilder.connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS);
         Retrofit.Builder builder = new Retrofit.Builder().baseUrl(endPoint)
-                .addConverterFactory(GsonConverterFactory.create(gson));
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
         Retrofit retrofit = builder.client(httpClientBuilder.build()).build();
         return retrofit.create(serviceClass);
     }

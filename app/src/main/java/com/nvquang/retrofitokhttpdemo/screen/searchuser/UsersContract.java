@@ -16,7 +16,15 @@ public class UsersContract {
      */
     interface View {
 
+        void showLoadingIndicator();
+
         void showUsers(List<User> users);
+
+        void showFrameNoUser();
+
+        void hideFrameNoUser();
+
+        void hideLoadingIndicator();
     }
 
     /**
