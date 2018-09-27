@@ -1,10 +1,15 @@
 package com.nvquang.retrofitokhttpdemo.screen.searchuser;
 
-import com.nvquang.retrofitokhttpdemo.data.datasource.UserDataSource;
-import com.nvquang.retrofitokhttpdemo.data.model.User;
-import com.nvquang.retrofitokhttpdemo.data.repository.UserRepository;
+import android.support.annotation.NonNull;
 
-import java.util.List;
+import com.nvquang.retrofitokhttpdemo.data.model.SearchResult;
+import com.nvquang.retrofitokhttpdemo.data.repository.UserRepository;
+import com.nvquang.retrofitokhttpdemo.util.rx.BaseSchedulerProvider;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by quangnv on 16/08/2018
@@ -14,34 +19,47 @@ public class UsersPresenter implements UsersContract.Presenter {
 
     private UserRepository mUserRepository;
     private UsersContract.View mView;
+    private BaseSchedulerProvider mSchedulerProvider;
 
-    public UsersPresenter(UserRepository userRepository) {
+    @NonNull
+    private CompositeDisposable mCompositeDisposable;
+
+    public UsersPresenter(UserRepository userRepository, BaseSchedulerProvider schedulerProvider) {
         mUserRepository = userRepository;
+        mSchedulerProvider = schedulerProvider;
+        mCompositeDisposable = new CompositeDisposable();
     }
 
     @Override
     public void searchUsers(String q) {
-        mUserRepository.searchUser(q, new UserDataSource.Callback<List<User>>() {
-            @Override
-            public void onStartLoading() {
-
-            }
-
-            @Override
-            public void onLoaded(List<User> data) {
-                mView.showUsers(data);
-            }
-
-            @Override
-            public void onDataNotAvailable(Exception e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+        Disposable disposable = mUserRepository.searchUser(q)
+                .subscribeOn(mSchedulerProvider.io())
+                .observeOn(mSchedulerProvider.ui())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        mView.hideFrameNoUser();
+                        mView.showLoadingIndicator();
+                    }
+                })
+                .doAfterTerminate(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        mView.hideLoadingIndicator();
+                    }
+                })
+                .subscribe(new Consumer<SearchResult>() {
+                    @Override
+                    public void accept(SearchResult searchResult) throws Exception {
+                        mView.showUsers(searchResult.getUsers());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        mView.showFrameNoUser();
+                    }
+                });
+        mCompositeDisposable.add(disposable);
     }
 
     @Override
@@ -51,11 +69,12 @@ public class UsersPresenter implements UsersContract.Presenter {
 
     @Override
     public void onStart() {
-
+        mView.hideFrameNoUser();
+        mView.hideLoadingIndicator();
     }
 
     @Override
     public void onStop() {
-
+        mCompositeDisposable.clear();
     }
 }

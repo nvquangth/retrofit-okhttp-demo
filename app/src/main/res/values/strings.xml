@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RetrofitOkHttpDemo</string>
+    <string name="title_data_not_available">Data not available</string>
 </resources>
