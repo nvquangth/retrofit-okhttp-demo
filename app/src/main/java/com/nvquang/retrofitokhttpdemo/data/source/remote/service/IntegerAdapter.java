@@ -1,4 +1,4 @@
-package com.nvquang.retrofitokhttpdemo.data.datasource.remote.service;
+package com.nvquang.retrofitokhttpdemo.data.source.remote.service;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

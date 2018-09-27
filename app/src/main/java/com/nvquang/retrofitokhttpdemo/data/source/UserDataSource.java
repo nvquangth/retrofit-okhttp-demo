@@ -1,4 +1,4 @@
-package com.nvquang.retrofitokhttpdemo.data.datasource;
+package com.nvquang.retrofitokhttpdemo.data.source;
 
 import com.nvquang.retrofitokhttpdemo.data.model.SearchResult;
 

@@ -1,6 +1,6 @@
 package com.nvquang.retrofitokhttpdemo.data.repository;
 
-import com.nvquang.retrofitokhttpdemo.data.datasource.UserDataSource;
+import com.nvquang.retrofitokhttpdemo.data.source.UserDataSource;
 import com.nvquang.retrofitokhttpdemo.data.model.SearchResult;
 import com.nvquang.retrofitokhttpdemo.data.model.User;
 

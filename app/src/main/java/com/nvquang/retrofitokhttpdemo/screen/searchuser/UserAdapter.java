@@ -9,9 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.nvquang.retrofitokhttpdemo.R;
 import com.nvquang.retrofitokhttpdemo.data.model.User;
-import com.nvquang.retrofitokhttpdemo.util.GlideApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,9 +72,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         }
 
         private void bindData(User user) {
-            GlideApp.with(itemView.getContext())
+            Glide.with(itemView.getContext())
                     .load(user.getAvatarUrl())
-                    .circleCrop()
+                    .apply(RequestOptions.centerCropTransform())
                     .into(mImageUser);
             mTextLogin.setText(user.getLogin());
             mTextScore.setText(user.getScore() + "");

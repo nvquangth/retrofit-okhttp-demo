@@ -1,0 +1,18 @@
+package com.nvquang.retrofitokhttpdemo.data.model;
+
+import com.google.gson.Gson;
+
+/**
+ * Created by fs-sournary.
+ * Date: 5/23/18.
+ * Description:
+ */
+
+public class BaseModel implements Cloneable {
+
+    @Override
+    public Object clone() {
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(this), this.getClass());
+    }
+}

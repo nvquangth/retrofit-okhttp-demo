@@ -1,23 +1,23 @@
 package com.nvquang.retrofitokhttpdemo.screen.searchuser;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.nvquang.retrofitokhttpdemo.MainApplication;
 import com.nvquang.retrofitokhttpdemo.R;
-import com.nvquang.retrofitokhttpdemo.data.datasource.remote.UserRemoteDataSource;
 import com.nvquang.retrofitokhttpdemo.data.model.User;
-import com.nvquang.retrofitokhttpdemo.data.repository.UserRepository;
-import com.nvquang.retrofitokhttpdemo.util.rx.SchedulerProvider;
+import com.nvquang.retrofitokhttpdemo.screen.BaseActivity;
 
 import java.util.List;
 
-public class UsersActivity extends AppCompatActivity implements UsersContract.View, TextWatcher,
+import javax.inject.Inject;
+
+public class UsersActivity extends BaseActivity implements UsersContract.View, TextWatcher,
         View.OnClickListener {
 
     private EditText mEditTextSearch;
@@ -26,29 +26,40 @@ public class UsersActivity extends AppCompatActivity implements UsersContract.Vi
     private View mViewNoUser;
 
     private UserAdapter mUserAdapter;
-    private UserRepository mUserRepository;
-    private UsersContract.Presenter mPresenter;
+    @Inject
+    UsersContract.Presenter mPresenter;
     private String q;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_user);
+    protected int getLayoutResource() {
+        return R.layout.activity_search_user;
+    }
 
+    @Override
+    protected void initComponent(@NonNull Bundle savedInstanceState) {
+        DaggerUserComponent.builder()
+                .appComponent(((MainApplication) getApplication()).getAppComponent())
+                .userModule(new UserModule())
+                .build()
+                .inject(this);
+        mPresenter.setView(this);
+        mPresenter.onStart();
+        mUserAdapter = new UserAdapter(this);
+        mRecyclerView.setAdapter(mUserAdapter);
+    }
+
+    @Override
+    protected void initView() {
         mViewNoUser = findViewById(R.id.linear_data_no_available);
         mLoadingIndicator = findViewById(R.id.linear_loading_indicator);
         mEditTextSearch = findViewById(R.id.text_search);
         mRecyclerView = findViewById(R.id.recycler_view);
+    }
+
+    @Override
+    protected void registerListener() {
         mEditTextSearch.addTextChangedListener(this);
         mViewNoUser.setOnClickListener(this);
-
-        mUserRepository = UserRepository.getInstance(UserRemoteDataSource.getInstance(this));
-        mPresenter = new UsersPresenter(mUserRepository, SchedulerProvider.getInstance());
-        mPresenter.setView(this);
-        mPresenter.onStart();
-
-        mUserAdapter = new UserAdapter(this);
-        mRecyclerView.setAdapter(mUserAdapter);
     }
 
     @Override

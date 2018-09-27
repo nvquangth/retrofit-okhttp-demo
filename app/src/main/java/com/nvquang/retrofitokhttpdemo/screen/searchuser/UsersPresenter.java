@@ -1,7 +1,5 @@
 package com.nvquang.retrofitokhttpdemo.screen.searchuser;
 
-import android.support.annotation.NonNull;
-
 import com.nvquang.retrofitokhttpdemo.data.model.SearchResult;
 import com.nvquang.retrofitokhttpdemo.data.repository.UserRepository;
 import com.nvquang.retrofitokhttpdemo.util.rx.BaseSchedulerProvider;
@@ -20,14 +18,14 @@ public class UsersPresenter implements UsersContract.Presenter {
     private UserRepository mUserRepository;
     private UsersContract.View mView;
     private BaseSchedulerProvider mSchedulerProvider;
-
-    @NonNull
     private CompositeDisposable mCompositeDisposable;
 
-    public UsersPresenter(UserRepository userRepository, BaseSchedulerProvider schedulerProvider) {
+    public UsersPresenter(UserRepository userRepository,
+                          BaseSchedulerProvider provider,
+                          CompositeDisposable disposable) {
         mUserRepository = userRepository;
-        mSchedulerProvider = schedulerProvider;
-        mCompositeDisposable = new CompositeDisposable();
+        mSchedulerProvider = provider;
+        mCompositeDisposable = disposable;
     }
 
     @Override
