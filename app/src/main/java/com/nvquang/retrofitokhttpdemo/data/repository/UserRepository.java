@@ -1,9 +1,12 @@
 package com.nvquang.retrofitokhttpdemo.data.repository;
 
 import com.nvquang.retrofitokhttpdemo.data.datasource.UserDataSource;
+import com.nvquang.retrofitokhttpdemo.data.model.SearchResult;
 import com.nvquang.retrofitokhttpdemo.data.model.User;
 
 import java.util.List;
+
+import io.reactivex.Observable;
 
 /**
  * Created by quangnv on 16/08/2018
@@ -26,7 +29,7 @@ public class UserRepository implements UserDataSource.RemoteDataSource {
     }
 
     @Override
-    public void searchUser(String q, Callback<List<User>> callback) {
-        mRemoteDataSource.searchUser(q, callback);
+    public Observable<SearchResult> searchUser(String q) {
+        return mRemoteDataSource.searchUser(q);
     }
 }

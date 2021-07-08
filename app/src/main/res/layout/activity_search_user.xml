@@ -1,19 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <EditText
-        android:id="@+id/text_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.nvquang.retrofitokhttpdemo.screen.searchuser.SearchViewModel" />
+    </data>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+        tools:context=".screen.searchuser.SearchActivity">
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/text_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:addTextChangedListener="@{viewModel.mWatcher}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_search">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:recyclerAdapter="@{viewModel.adapter}"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+
+            <include
+                android:onClick="@{viewModel::reSearchUsers}"
+                android:visibility="@{viewModel.mIsDataNotAvailable ? View.VISIBLE : View.GONE}"
+                android:id="@+id/linear_data_no_available"
+                layout="@layout/data_not_available" />
+
+            <include
+                android:visibility="@{viewModel.mIsDataLoading ? View.VISIBLE : View.GONE}"
+                android:id="@+id/linear_loading_indicator"
+                layout="@layout/loading_indicator" />
+
+        </FrameLayout>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

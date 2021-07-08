@@ -1,50 +1,52 @@
 package com.nvquang.retrofitokhttpdemo.screen.searchuser;
 
-import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.nvquang.retrofitokhttpdemo.R;
 import com.nvquang.retrofitokhttpdemo.data.model.User;
+import com.nvquang.retrofitokhttpdemo.databinding.ItemUserBinding;
 import com.nvquang.retrofitokhttpdemo.util.GlideApp;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by quangnv on 16/08/2018
+ * Created by quangnv on 21/08/2018
  */
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ItemViewHolder> {
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
-
-    private LayoutInflater mInflater;
     private List<User> mUsers;
+    private ItemClickListener mItemClickListener;
 
-    public UserAdapter(Context context) {
-        mInflater = LayoutInflater.from(context);
+    public UserAdapter() {
         mUsers = new ArrayList<>();
     }
 
     @NonNull
     @Override
-    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.item_user, parent, false);
-        return new UserViewHolder(view);
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ItemUserBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext())
+                , R.layout.item_user, parent, false);
+        return new ItemViewHolder(binding, mItemClickListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        holder.bindData(mUsers.get(position));
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+        holder.bind(mUsers.get(position));
     }
 
     @Override
     public int getItemCount() {
         return mUsers != null ? mUsers.size() : 0;
+    }
+
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
     }
 
     public void setUsers(List<User> users) {
@@ -53,30 +55,26 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         notifyDataSetChanged();
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView mImageUser;
-        private TextView mTextLogin;
-        private TextView mTextScore;
+        private ItemUserBinding mBinding;
+        private ItemUserViewModel mItemUserViewModel;
 
-        public UserViewHolder(View itemView) {
-            super(itemView);
-            initView(itemView);
+        ItemViewHolder(ItemUserBinding binding, ItemClickListener itemClickListener) {
+            super(binding.getRoot());
+            mBinding = binding;
+            mItemUserViewModel = new ItemUserViewModel(itemClickListener);
+            mBinding.setViewModel(mItemUserViewModel);
         }
 
-        private void initView(View view) {
-            mImageUser = view.findViewById(R.id.image_user);
-            mTextLogin = view.findViewById(R.id.text_login);
-            mTextScore = view.findViewById(R.id.text_score);
+        private void bind(User user) {
+            mItemUserViewModel.setUser(user);
+            mBinding.executePendingBindings();
         }
+    }
 
-        private void bindData(User user) {
-            GlideApp.with(itemView.getContext())
-                    .load(user.getAvatarUrl())
-                    .circleCrop()
-                    .into(mImageUser);
-            mTextLogin.setText(user.getLogin());
-            mTextScore.setText(user.getScore() + "");
-        }
+    public interface ItemClickListener {
+
+        void onItemClick(User user);
     }
 }

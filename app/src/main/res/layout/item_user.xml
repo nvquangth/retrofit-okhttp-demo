@@ -1,37 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_80"
-    android:layout_margin="@dimen/dp_5">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <ImageView
-        android:id="@+id/image_user"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="match_parent" />
+    <data>
+        <variable
+            name="viewModel"
+            type="com.nvquang.retrofitokhttpdemo.screen.searchuser.ItemUserViewModel" />
+    </data>
 
-    <TextView
-        android:id="@+id/text_login"
-        android:layout_toRightOf="@+id/image_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dp_5" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_80"
+        android:layout_margin="@dimen/dp_5">
 
-    <TextView
-        android:id="@+id/text_score"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:padding="@dimen/dp_5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/image_user"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
+            android:scaleType="centerCrop"
+            app:imageUrl="@{viewModel.userObservableField.avatarUrl}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/taylorswift" />
 
-    <ImageButton
-        android:layout_toLeftOf="@+id/text_score"
-        android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:src="@drawable/ic_star_black_24dp" />
+        <TextView
+            android:id="@+id/text_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_10"
+            android:text="@{viewModel.userObservableField.login}"
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_user"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/text_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_10"
+            android:text="@{String.valueOf(viewModel.userObservableField.score)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@null"
+            android:src="@drawable/ic_star_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/text_rating" />
+    </android.support.constraint.ConstraintLayout>
+</layout>
